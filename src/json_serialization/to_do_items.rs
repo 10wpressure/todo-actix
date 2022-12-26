@@ -1,8 +1,5 @@
-use actix_rt::net::Ready;
 use actix_web::{HttpRequest, HttpResponse, Responder};
-use actix_web::body::{BoxBody, MessageBody};
 use actix_web::http::StatusCode;
-use async_std::future::ready;
 use serde::Serialize;
 use crate::to_do::ItemTypes;
 use crate::to_do::structs::base::Base;
