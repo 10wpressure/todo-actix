@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, web};
-use serde_json::{Map, Value};
+use serde_json::{Map,Value};
 use crate::json_serialization::to_do_item::ToDoItem;
 use crate::processes::process_input;
 use crate::state::{FILE_NAME, read_file};
@@ -11,7 +11,7 @@ pub async fn edit(to_do_item: web::Json<ToDoItem>) -> HttpResponse {
     let title_reference: &String = &to_do_item.title.clone();
     let title: String = to_do_item.title.clone();
 
-    let status = match state.get(title_reference) {
+    let status: String = match state.get(title_reference) {
         None => return HttpResponse::NotFound().json(format!("{} not in state", title_reference)),
         Some(result) => result.to_string().replace('\"', "")
     };
