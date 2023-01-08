@@ -1,3 +1,7 @@
+extern crate core;
+extern crate dotenv;
+extern crate diesel;
+
 use actix_web::{App, HttpServer};
 use actix_service::Service;
 
@@ -6,6 +10,9 @@ mod to_do;
 mod state;
 mod processes;
 mod json_serialization;
+mod database;
+mod schema;
+mod models;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
