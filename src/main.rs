@@ -1,6 +1,6 @@
 extern crate core;
 extern crate dotenv;
-extern crate diesel;
+#[macro_use] extern crate diesel;
 
 use actix_web::{App, HttpServer};
 use actix_service::Service;
