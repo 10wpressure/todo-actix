@@ -13,6 +13,7 @@ mod json_serialization;
 mod database;
 mod schema;
 mod models;
+mod auth;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
