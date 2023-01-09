@@ -6,13 +6,15 @@ use crate::schema::to_do;
 pub struct NewItem {
     pub title: String,
     pub status: String,
+    pub user_id: i32,
 }
 
 impl NewItem {
-    pub fn new(title: String) -> Self {
+    pub fn new(title: String, user_id: i32) -> Self {
         NewItem {
             title,
             status: String::from("pending"),
+            user_id,
         }
     }
 }
