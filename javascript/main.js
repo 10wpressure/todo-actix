@@ -1,3 +1,8 @@
+if (localStorage.getItem("user-token") == null) {
+    window.location.replace(document.location.origin + "/login/");
+}
+
+
 /**
  * Renders the to do items from the backend into a HTML div.
  *
@@ -6,7 +11,7 @@
  * @param elementId {String} - the id of the HTML element that the items will be inserted
  * @param processFunction {Function: editItem | deleteItem} - function that is fired once the button is clicked
  */
-function renderItems (items, processType, elementId, processFunction) {
+function renderItems(items, processType, elementId, processFunction) {
     let placeholder = '<div>';
     const itemsMeta = [];
 
@@ -31,16 +36,20 @@ function renderItems (items, processType, elementId, processFunction) {
  * @param method {String} - the method of the API call => POST, GET, PUT
  * @returns {XMLHttpRequest} - the API packaged API request
  */
-function apiCall (url, method) {
+function apiCall(url, method) {
 
     let xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
     xhr.addEventListener('readystatechange', function () {
         if (this.readyState === this.DONE) {
-            renderItems(JSON.parse(this.responseText)['pending_items'], 'edit', 'pendingItems', editItem);
-            renderItems(JSON.parse(this.responseText)['done_items'], 'delete', 'doneItems', deleteItem);
-            document.getElementById('completeNum').innerHTML = JSON.parse(this.responseText)["done_item_count"];
-            document.getElementById('pendingNum').innerHTML = JSON.parse(this.responseText)["pending_item_count"];
+            if (this.status === 401) {
+                window.location.replace(document.location.origin + "/login/");
+            } else {
+                renderItems(JSON.parse(this.responseText)['pending_items'], 'edit', 'pendingItems', editItem);
+                renderItems(JSON.parse(this.responseText)['done_items'], 'delete', 'doneItems', deleteItem);
+                document.getElementById('completeNum').innerHTML = JSON.parse(this.responseText)["done_item_count"];
+                document.getElementById('pendingNum').innerHTML = JSON.parse(this.responseText)["pending_item_count"];
+            }
         }
     });
     xhr.open(method, url);
@@ -52,7 +61,7 @@ function apiCall (url, method) {
 /**
  * Gets the title from the HTML with "name" as ID, and calls the create API endpoint with it.
  */
-function createItem () {
+function createItem() {
     const title = document.getElementById("name");
     const url = `/item/create/${title.value}`;
     const call = apiCall(url, 'POST');
@@ -63,7 +72,7 @@ function createItem () {
 /**
  * Calls the get items API.
  */
-function getItems () {
+function getItems() {
     const call = apiCall('/item/get', 'GET');
     call.send()
 }
@@ -71,7 +80,7 @@ function getItems () {
 /**
  * Gets the title from this, and calls the edit API endpoint.
  */
-function editItem () {
+function editItem() {
     const title = this.id.replaceAll('-', ' ').replace('edit ', '');
     const call = apiCall('/item/edit', 'PUT');
     const json = {
@@ -84,7 +93,7 @@ function editItem () {
 /**
  * Gets the title from this, and calls the delete API endpoint.
  */
-function deleteItem () {
+function deleteItem() {
     const title = this.id.replaceAll('-', ' ').replace('delete ', '');
     const call = apiCall('/item/delete', 'POST');
     const json = {

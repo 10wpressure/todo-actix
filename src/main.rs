@@ -4,6 +4,7 @@ extern crate dotenv;
 
 use actix_web::{App, HttpServer};
 use actix_service::Service;
+use crate::auth::process_token;
 
 mod views;
 mod to_do;
@@ -20,7 +21,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| App::new()
         .wrap_fn(|req, srv| {
             if req.path().contains("/item/") {
-                match views::token::process_token(&req) {
+                match process_token(&req) {
                     Ok(token) => {
                         println!("the token is passable: {:?}", token)
                     }
