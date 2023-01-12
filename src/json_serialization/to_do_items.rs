@@ -1,8 +1,8 @@
-use actix_web::{HttpRequest, HttpResponse, Responder};
-use actix_web::http::StatusCode;
-use serde::Serialize;
-use crate::to_do::ItemTypes;
 use crate::to_do::structs::base::Base;
+use crate::to_do::ItemTypes;
+use actix_web::http::StatusCode;
+use actix_web::{HttpRequest, HttpResponse, Responder};
+use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct ToDoItems {

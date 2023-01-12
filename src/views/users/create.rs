@@ -1,10 +1,10 @@
-use crate::diesel;
-use diesel::prelude::*;
-use actix_web::{web, HttpResponse};
 use crate::database::establish_connection;
+use crate::diesel;
 use crate::json_serialization::new_user::NewUserSchema;
 use crate::models::user::new_user::NewUser;
 use crate::schema::users;
+use actix_web::{web, HttpResponse};
+use diesel::prelude::*;
 
 pub async fn create(new_user: web::Json<NewUserSchema>) -> HttpResponse {
     let connection = &mut establish_connection();

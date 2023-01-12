@@ -1,12 +1,12 @@
-use actix_web::HttpRequest;
-use actix_web::Responder;
-use crate::diesel::prelude::*;
+use crate::auth::jwt::JwtToken;
 use crate::database::establish_connection;
-use crate::models::item::item::Item;
+use crate::diesel::prelude::*;
+use crate::models::item::generic_item::Item;
 use crate::models::item::new_item::NewItem;
 use crate::schema::to_do;
 use crate::views::to_do::utils::return_state;
-use crate::auth::jwt::JwtToken;
+use actix_web::HttpRequest;
+use actix_web::Responder;
 
 pub async fn create(req: HttpRequest) -> impl Responder {
     let connection = &mut establish_connection();
@@ -23,7 +23,9 @@ pub async fn create(req: HttpRequest) -> impl Responder {
 
     if items.is_empty() {
         let new_post = NewItem::new(title, token.user_id);
-        let _ = diesel::insert_into(to_do::table).values(&new_post).execute(connection);
+        let _ = diesel::insert_into(to_do::table)
+            .values(&new_post)
+            .execute(connection);
     }
     return_state(&token.user_id)
 }

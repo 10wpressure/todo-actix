@@ -1,12 +1,12 @@
-use actix_web::{HttpResponse, HttpRequest, web};
 use crate::auth::jwt::JwtToken;
 use crate::database::establish_connection;
+use crate::diesel;
 use crate::json_serialization::to_do_item::ToDoItem;
+use crate::models::item::generic_item::Item;
 use crate::schema::to_do;
 use crate::views::to_do::utils::return_state;
-use crate::diesel;
+use actix_web::{web, HttpRequest, HttpResponse};
 use diesel::prelude::*;
-use crate::models::item::item::Item;
 
 pub async fn delete(to_do_item: web::Json<ToDoItem>, req: HttpRequest) -> HttpResponse {
     let connection = &mut establish_connection();

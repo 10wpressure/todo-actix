@@ -1,5 +1,5 @@
-use diesel::Insertable;
 use crate::schema::to_do;
+use diesel::Insertable;
 
 #[derive(Insertable)]
 #[diesel(table_name = to_do)]

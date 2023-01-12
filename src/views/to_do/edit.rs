@@ -1,11 +1,11 @@
 use super::utils::return_state;
-use actix_web::{HttpRequest, HttpResponse, web};
-use crate::json_serialization::to_do_item::ToDoItem;
-use crate::schema::to_do;
-use crate::diesel;
-use diesel::prelude::*;
 use crate::auth::jwt::JwtToken;
 use crate::database::establish_connection;
+use crate::diesel;
+use crate::json_serialization::to_do_item::ToDoItem;
+use crate::schema::to_do;
+use actix_web::{web, HttpRequest, HttpResponse};
+use diesel::prelude::*;
 
 pub async fn edit(to_do_item: web::Json<ToDoItem>, req: HttpRequest) -> HttpResponse {
     let connection = &mut establish_connection();

@@ -1,6 +1,6 @@
-use diesel::{Identifiable, Queryable, Associations};
+use super::super::user::generic_user::User;
 use crate::schema::to_do;
-use super::super::user::user::User;
+use diesel::{Associations, Identifiable, Queryable};
 
 #[derive(Queryable, Identifiable, Associations)]
 #[diesel(belongs_to(User))]
