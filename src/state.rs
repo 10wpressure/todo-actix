@@ -5,10 +5,6 @@ use std::path::Path;
 use serde_json::{json, Map};
 use serde_json::value::Value;
 
-pub const FILE_NAME: &str = "state.json";
-
-pub type State = Map<String, Value>;
-
 pub fn read_file(file_name: &str) -> Map<String, Value> {
     let empty = create_init_state_file(file_name); // TODO: if no json or empty json - init it
     let mut file = File::open(file_name).unwrap();

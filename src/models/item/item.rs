@@ -1,9 +1,9 @@
-use diesel::{Identifiable, Queryable};
+use diesel::{Identifiable, Queryable, Associations};
 use crate::schema::to_do;
 use super::super::user::user::User;
 
 #[derive(Queryable, Identifiable, Associations)]
-#[belongs_to(User)]
+#[diesel(belongs_to(User))]
 #[diesel(table_name = to_do)]
 pub struct Item {
     pub id: i32,

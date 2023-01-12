@@ -1,4 +1,5 @@
-use actix_web::{HttpResponse, web};
+use actix_web::{HttpResponse, HttpRequest, web};
+use crate::auth::jwt::JwtToken;
 use crate::database::establish_connection;
 use crate::json_serialization::to_do_item::ToDoItem;
 use crate::schema::to_do;
@@ -7,12 +8,15 @@ use crate::diesel;
 use diesel::prelude::*;
 use crate::models::item::item::Item;
 
-pub async fn delete(to_do_item: web::Json<ToDoItem>) -> HttpResponse {
+pub async fn delete(to_do_item: web::Json<ToDoItem>, req: HttpRequest) -> HttpResponse {
     let connection = &mut establish_connection();
 
+    let title = &to_do_item.title;
+    let token = JwtToken::decode_from_request(req).unwrap();
+
     let items = to_do::table
-        .filter(to_do::columns::title
-            .eq(&to_do_item.title))
+        .filter(to_do::columns::title.eq(title))
+        .filter(to_do::columns::user_id.eq(&token.user_id))
         .order(to_do::columns::id.asc())
         .load::<Item>(connection)
         .unwrap();
@@ -21,5 +25,5 @@ pub async fn delete(to_do_item: web::Json<ToDoItem>) -> HttpResponse {
         .execute(connection)
         .expect("Unable to update status");
 
-    HttpResponse::Ok().json(return_state())
+    HttpResponse::Ok().json(return_state(&token.user_id))
 }

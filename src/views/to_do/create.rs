@@ -4,22 +4,26 @@ use crate::diesel::prelude::*;
 use crate::database::establish_connection;
 use crate::models::item::item::Item;
 use crate::models::item::new_item::NewItem;
-use crate::schema::to_do::dsl::{to_do, title};
-use crate::schema::to_do::id;
+use crate::schema::to_do;
 use crate::views::to_do::utils::return_state;
-
+use crate::auth::jwt::JwtToken;
 
 pub async fn create(req: HttpRequest) -> impl Responder {
-    let request_title = req.match_info().get("title").unwrap().to_string();
-    let mut connection = establish_connection();
-    let items = to_do
-        .filter(title.eq(&request_title))
-        .order(id.asc())
-        .load::<Item>(&mut connection)
+    let connection = &mut establish_connection();
+
+    let title = req.match_info().get("title").unwrap().to_string();
+    let token = JwtToken::decode_from_request(req).unwrap();
+
+    let items = to_do::table
+        .filter(to_do::columns::title.eq(&title))
+        .filter(to_do::columns::user_id.eq(&token.user_id))
+        .order(to_do::columns::id.asc())
+        .load::<Item>(connection)
         .unwrap();
+
     if items.is_empty() {
-        let new_post = NewItem::new(request_title, 1);
-        let _ = diesel::insert_into(to_do).values(&new_post).execute(&mut connection);
+        let new_post = NewItem::new(title, token.user_id);
+        let _ = diesel::insert_into(to_do::table).values(&new_post).execute(connection);
     }
-    return_state()
+    return_state(&token.user_id)
 }

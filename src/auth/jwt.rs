@@ -7,6 +7,7 @@ use hmac::{Hmac, Mac};
 use jwt::{Header, Token, VerifyWithKey};
 use jwt::SignWithKey;
 use std::collections::BTreeMap;
+use actix_web::HttpRequest;
 
 pub struct JwtToken {
     pub user_id: i32,
@@ -34,6 +35,13 @@ impl JwtToken {
                 Ok(JwtToken { user_id: claims["user_id"], body: encoded_token })
             }
             Err(_) => Err("Could not decode")
+        }
+    }
+
+    pub fn decode_from_request(req: HttpRequest) -> Result<JwtToken, &'static str> {
+        match req.headers().get("user-token") {
+            Some(token) => JwtToken::decode(String::from(token.to_str().unwrap())),
+            None => Err("No token received")
         }
     }
 }

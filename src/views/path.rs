@@ -1,9 +1,13 @@
 pub struct Path {
     pub prefix: String,
+    pub backend: bool,
 }
 
 impl Path {
     pub fn define(&self, following_path: String) -> String {
-        self.prefix.to_owned() + &following_path
+        match self.backend {
+            true => format!("/api/v1{}{}", &self.prefix, &following_path),
+            false => self.prefix.to_owned() + &following_path,
+        }
     }
 }
